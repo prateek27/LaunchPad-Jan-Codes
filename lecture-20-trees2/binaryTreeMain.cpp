@@ -1,6 +1,7 @@
 #include<iostream>
 #include "binaryTreeNode.h"
 #include<queue>
+#include<cmath>
 using namespace std;
 
 class hdpair{
@@ -191,10 +192,44 @@ int diameter(BinaryTreeNode* root){
 	return max(option1,max(option2,option3));
 }
 
+class bhpair{
+public:
+	bool isBalanced;
+	int height;
+
+	bhpair(){}
+
+	bhpair(int h,bool b){
+		isBalanced = b;
+		height = h;
+	}
+};
+
+bhpair isBalancedTree(BinaryTreeNode * root){
+	if(root==NULL){
+		bhpair ans;
+		ans.height = 0;	
+		ans.isBalanced = true;
+		return ans;
+	}
+	bhpair left = isBalancedTree(root->left);
+	bhpair right = isBalancedTree(root->right);
+
+	if(abs(left.height - right.height <=1)&&left.isBalanced && right.isBalanced){
+		return bhpair(max(left.height,right.height)+1,true);
+	}
+	else{
+		return bhpair(max(left.height,right.height)+1,false);
+	}
+		
+
+}
+
 
 int main(){
 BinaryTreeNode*root = NULL;
 root = takeInputLevelOrder();
+/*
 printPreorder(root); cout<<"Preorder "<<endl;
 printInorder(root);	cout<<"Inorder "<<endl;
 printPostorder(root);	cout<<" PostOrder "<<endl;
@@ -205,8 +240,17 @@ cout<<"Diameter of Tree is :"<<diameter(root)<<endl;
 
 cout<<"Faster Method : Diameter "<<diameter2(root).diameter<<endl;
 
-mirror(root);
+mirror(root); */
 printLevelOrder2(root);
+
+bhpair output = isBalancedTree(root);
+
+if(output.isBalanced==true){
+	cout<<"Balanced hai !"<<endl;
+}
+else{
+	cout<<"Balanced nahin hai !"<<endl;
+}
 
 return 0;
 }

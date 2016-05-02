@@ -1,0 +1,119 @@
+#include<iostream>
+#include<list>
+#include<queue>
+using namespace std;
+
+class Graph{
+
+int V;
+
+list<int> *arr;
+
+public:
+Graph(int vertices){
+	V = vertices;
+	arr = new list<int>[V];
+	//arr = new vector<vector<int> >(V);
+	}
+void addEdge(int u,int v){
+	arr[u].push_back(v);
+	arr[v].push_back(u);
+}
+
+void BFSPrint(int s){	
+	bool *visited = new bool[V];
+	
+	for(int i=0;i<V;i++){
+		visited[i] = false;
+	}
+	queue<int> q;
+	q.push(s);
+	visited[s] = true;
+
+	while(!q.empty()){
+		int front = q.front();
+		cout<<front<<" ";
+		q.pop();
+
+		list<int>::iterator it;
+		for(it = arr[front].begin();it!=arr[front].end();it++)
+		{
+			if(!visited[*it])
+				{ q.push(*it);
+				  visited[*it] = true;	
+				}
+		}
+			
+	}	
+}
+int shortestPath(int s,int d){
+	
+	int *dist = new int[V];
+	for(int i=0;i<V;i++){
+		dist[i] = -1;
+	}
+	
+	queue<int> q;
+	q.push(s);
+	dist[s] = 0;
+
+	while(!q.empty()){
+		int f = q.front();
+		q.pop();
+		
+		list<int>::iterator it;
+		for(it = arr[f].begin();it!=arr[f].end();it++){
+			if(dist[*it]==-1){
+				dist[*it] = dist[f] + 1;
+				q.push(*it);
+				
+				if(*it==d){
+					return dist[*it];
+				}
+			}
+
+		}
+		
+
+	}
+return -1;
+}
+
+
+	~Graph(){
+		delete [] arr;
+	}
+};
+
+
+
+int main(){
+
+ int board[37] ={0}; 
+        board[2] = 13;
+        board[5] = 2;
+        board[9] = 28;
+        board[18] = 11;
+        board[17] = -13;
+        board[20] = -14;
+        board[24] = -8;
+        board[25] = 10;
+        board[32] = -2;
+        board[34] = -22;
+
+
+Graph g(37);
+
+for(int i=0;i<36;i++)
+{
+	for(int jump=1;jump<=6;jump++){
+			int jumped_position = i + jump + board[i+jump];
+			
+			if(jumped_position<=36)
+				g.addEdge(i,jumped_position);
+
+	}
+}
+cout<< "Shortest Path is "<< g.shortestPath(36,0);
+return 0;
+}
